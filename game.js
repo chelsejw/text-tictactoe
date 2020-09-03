@@ -187,8 +187,7 @@ const makeMove = (turnNum) => {
 
     displayBoard(gameBoard, boardSize)
     turnNum++;
-    if (turnNum >4) {
-      //Because there can only be a winner on the fifth move.
+    if (turnNum >4) { //Because there can only be a winner on the fifth move.
       if (checkWin(targetSquare)) {
         gameIsDone = true;
         thereIsWinner = true;
