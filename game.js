@@ -10,14 +10,7 @@ const getSquarePosition = (squareNum, boardSize) => {
   };
 };
 
-const getValueAtSquare = (squareNum, boardSize, gameBoard) => {
-  let {row, col} = getSquarePosition(squareNum, boardSize);
-  //First num of row would be at col 0
-  return gameBoard[row][col]
-};
-
 const markSquare = (squareNum, boardSize, gameBoard, marker) => {
-
     const {row, col} = getSquarePosition(squareNum, boardSize)
     if (gameBoard[row][col]===null) {
         gameBoard[row][col] = marker
@@ -28,16 +21,17 @@ const markSquare = (squareNum, boardSize, gameBoard, marker) => {
 }
 
 const displayBoard = (gameBoard, boardSize) => {
-  let row = "";
+  let rowString = "";
   for (let i = 1; i <= boardSize * boardSize; i++) {
-    let marker = getValueAtSquare(i, boardSize, gameBoard)
+    const {row, col} = getSquarePosition(i, boardSize)
+    let marker = gameBoard[row][col]
     //If the value is null, then use the index instead
     if (!marker) marker = i
 
     let extraSpace = boardSize - marker.toString().length;
 
     // Concactenate the row string with the appropriate spaces and marker value
-    row += `${"\xa0".repeat(
+    rowString += `${"\xa0".repeat(
       Math.floor(extraSpace / 2)
     )}${marker}${"\xa0".repeat(Math.ceil(extraSpace / 2))}${
       i % boardSize !== 0 ? "|" : "" //If it's not the end of the row, add the | symbol
@@ -45,9 +39,9 @@ const displayBoard = (gameBoard, boardSize) => {
 
     if (i % boardSize === 0) {
       //If this is the last square of the row, display the finished row
-      console.log(row);
-      console.log("-".repeat(row.length)); // Concactenate a string of dashed lines, number equal to the no. of characters in the row
-      row = ""; // Clear current row string to make way for next row
+      console.log(rowString);
+      console.log("-".repeat(rowString.length)); // Concactenate a string of dashed lines, number equal to the no. of characters in the row
+      rowString = ""; // Clear current row string to make way for next row
     }
   }
 };
@@ -65,29 +59,37 @@ const initialiseGameBoard = (boardSize) => {
 // GLOBAL VARiABLES: player1, player2, boardSize, gameBoard, turnNum, gameIsDone
 // GETTING PLAYER NAMES
 const regex = /^([^-!@#$%^&*()\s]|\w|\d)/;
-let player1 = prompt("Enter Player 1 Name: ");
+console.log("Enter Player 1 Name: ");
+let player1 = prompt();
 
 while (!regex.test(player1)) {
-    player1 = prompt("Player 1 name was invalid. (Should not be empty, and should start with a letter or number.) Please enter Player 1's Name: ")
+    console.log(
+      "Player 1 name was invalid. (Should not be empty, and should start with a letter or number.) Please enter Player 1's Name: "
+    );
+    player1 = prompt()
 }
-let player2 = prompt("Enter Player 2 Name: ");
+console.log("Enter Player 2 Name: ");
+let player2 = prompt();
 
 while (!regex.test(player2) || player2==player1) {
-
     //If the regex check failed, prompt for valid name. Else player2 name was the same as player1, ask for new name.
-
-  player2  = !regex.test(player2) ? prompt(
-    "Player 2 name was invalid. (Should not be empty, and should start with a letter or number.)  Please enter Player 2's Name: ") : prompt("Player 2 cannot have the same name as Player 1. Please enter a new name for Player 2: ")
+    if (!regex.test(player2)) {
+        console.log("Player 2 name was invalid. (Should not be empty, and should start with a letter or number.)  Please enter Player 2's Name: ")
+    } else {
+        console.log("Player 2 cannot have the same name as Player 1. Please enter a new name for Player 2: "); 
+    }
+    
+    player2 = prompt()
 }
 
 
-let boardSize = prompt(
-  "Enter board size as an integer greater than or equal to 3: "
-);
+console.log("Enter board size as an integer greater than or equal to 3: ");
+
+let boardSize = prompt()
+
 while (isNaN(boardSize) || boardSize < 3) {
-  boardSize = prompt(
-    "Invalid board size. Enter board size as an integer greater than or equal to 3."
-  );
+    console.log("Invalid board size. Enter board size as an integer greater than or equal to 3.")
+    boardSize = prompt();
 }
 
 // Make sure boardSize is an integer
@@ -181,23 +183,23 @@ const makeMove = (turnNum) => {
     const currentPlayer = turnNum%2===0 ? player1 : player2
     const marker = currentPlayer==player1 ? "X" : "O"
     console.log(`It is ${currentPlayer}'s turn!`)
-    console.log(` Please enter a number for where you want to make your move: `);
+    console.log(`Please enter a number for where you want to make your move:`);
     let targetSquare = prompt();
     while (isNaN(targetSquare) || targetSquare <= 0 || targetSquare > boardSize * boardSize) {
         if (isNaN(targetSquare)) {
-            targetSquare = prompt(`Sorry, that was not a number. Please enter a number for where you want make your move: `);
+            console.log(`Sorry, that was not a number. Please enter a number for where you want make your move: `)
         } else {
-            targetSquare = prompt(`Sorry, there are no squares with that number. Please enter a number for where you want make your move: `)
+            console.log(`Sorry, there are no squares with that number. Please enter a number for where you want make your move: `)
         }
+        targetSquare = prompt();
     }
 
     targetSquare = parseInt(targetSquare)
 
     let madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker)
     while (!madeAValidMove) {
-      targetSquare = prompt(
-        "Sorry, that was an invalid move. Please enter a number for a square that has not already been marked: "
-      );
+      console.log("Sorry, that was an invalid move. Please enter a number for a square that has not already been marked: ");
+      targetSquare = prompt();
       madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker);
     }
 
