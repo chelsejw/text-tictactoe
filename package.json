@@ -1,0 +1,24 @@
+{
+  "name": "text-tictactoe",
+  "version": "1.0.0",
+  "description": "text-based tictactoe",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chelsejw/text-tictactoe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chelsejw/text-tictactoe/issues"
+  },
+  "homepage": "https://github.com/chelsejw/text-tictactoe#readme",
+  "dependencies": {
+    "prompt": "^1.0.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
