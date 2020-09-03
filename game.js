@@ -165,13 +165,13 @@ const makeMove = (turnNum) => {
     const currentPlayer = turnNum%2===0 ? player1 : player2
     const marker = currentPlayer==player1 ? "X" : "O"
     console.log(`It is ${currentPlayer}'s turn!`)
-    console.log(`Please enter a number for where you want to make your move:`);
+    console.log(`${currentPlayer}, choose a box to place '${marker}' into:`);
     let targetSquare = prompt();
     while (isNaN(targetSquare) || targetSquare <= 0 || targetSquare > boardSize * boardSize) {
         if (isNaN(targetSquare)) {
-            console.log(`Sorry, that was not a number. Please enter a number for where you want make your move: `)
+            console.log(`Sorry, that was not a number. ${currentPlayer}, choose a box to place '${marker}' into:`)
         } else {
-            console.log(`Sorry, there are no squares with that number. Please enter a number for where you want make your move: `)
+            console.log(`Sorry, there are no squares with that number. ${currentPlayer}, choose a box to place '${marker}' into:`)
         }
         targetSquare = prompt();
     }
@@ -180,7 +180,7 @@ const makeMove = (turnNum) => {
 
     let madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker)
     while (!madeAValidMove) {
-      console.log("Sorry, that was an invalid move. Please enter a number for a square that has not already been marked: ");
+      console.log(`Sorry, that box is not available. ${currentPlayer}, choose a box to place '${marker}' into that isn't marked.`);
       targetSquare = prompt();
       madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker);
     }
@@ -193,7 +193,6 @@ const makeMove = (turnNum) => {
         thereIsWinner = true;
       }
     }
-
     if (turnNum === boardSize * boardSize) {
         gameIsDone = true;
     }
