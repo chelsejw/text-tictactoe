@@ -46,7 +46,7 @@ const displayBoard = (gameBoard, boardSize) => {
     if (i % boardSize === 0) {
       //If this is the last square of the row, display the finished row
       console.log(row);
-      console.log("=".repeat(row.length)); // Concactenate a string of dashed lines, number equal to the no. of characters in the row
+      console.log("-".repeat(row.length)); // Concactenate a string of dashed lines, number equal to the no. of characters in the row
       row = ""; // Clear current row string to make way for next row
     }
   }
@@ -97,12 +97,11 @@ boardSize = parseInt(boardSize)
 
 const gameBoard = initialiseGameBoard(boardSize)
 displayBoard(gameBoard, boardSize);
-
 let turnNum = 0
 let gameIsDone = false
 let thereIsWinner = false
 
-// O(1) time complexity
+// O(1) time complexity, unaffected by board size
 const checkWin = (num) => {
   const { col, row } = getSquarePosition(num, boardSize);
   const latestSquare = gameBoard[row][col];
@@ -201,12 +200,15 @@ const makeMove = (turnNum) => {
       );
       madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker);
     }
+
     displayBoard(gameBoard, boardSize)
     turnNum++;
-
-    if (turnNum >4 && checkWin(targetSquare)) { //Because there can only be a winner on the fifth move.
-        gameIsDone = true
-        thereIsWinner = true
+    if (turnNum >4) {
+      //Because there can only be a winner on the fifth move.
+      if (checkWin(targetSquare)) {
+        gameIsDone = true;
+        thereIsWinner = true;
+      }
     }
 
     if (turnNum === boardSize * boardSize) {
