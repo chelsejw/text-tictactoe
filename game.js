@@ -18,8 +18,6 @@ const getValueAtSquare = (squareNum, boardSize, gameBoard) => {
 
 const markSquare = (squareNum, boardSize, gameBoard, marker) => {
 
-    if (squareNum<=0 || squareNum > boardSize*boardSize) return false
-
     const {row, col} = getSquarePosition(squareNum, boardSize)
     if (gameBoard[row][col]===null) {
         gameBoard[row][col] = marker
@@ -38,17 +36,18 @@ const displayBoard = (gameBoard, boardSize) => {
 
     let extraSpace = boardSize - marker.toString().length;
 
+    // Concactenate the row string with the appropriate spaces and marker value
     row += `${"\xa0".repeat(
       Math.floor(extraSpace / 2)
     )}${marker}${"\xa0".repeat(Math.ceil(extraSpace / 2))}${
-      i % boardSize !== 0 ? "|" : ""
+      i % boardSize !== 0 ? "|" : "" //If it's not the end of the row, add the | symbol
     }`;
+
     if (i % boardSize === 0) {
-      //If this is the last square of the row,
+      //If this is the last square of the row, display the finished row
       console.log(row);
-      const rowLength = row.length;
-      row = "";
-      console.log("=".repeat(rowLength));
+      console.log("=".repeat(row.length)); // Concactenate a string of dashed lines, number equal to the no. of characters in the row
+      row = ""; // Clear current row string to make way for next row
     }
   }
 };
@@ -63,24 +62,36 @@ const initialiseGameBoard = (boardSize) => {
     return gameBoard
 }
 
-
-// const player1 = prompt("Enter Player 1 Name: ")
-// const player2 = prompt("Enter Player 2 Name: ");
-
-
 // GLOBAL VARiABLES: player1, player2, boardSize, gameBoard, turnNum, gameIsDone
-const player1 = "Chelsea";
-const player2 = "Misty";
+// GETTING PLAYER NAMES
+const regex = /^([^-!@#$%^&*()\s]|\w|\d)/;
+let player1 = prompt("Enter Player 1 Name: ");
+
+while (!regex.test(player1)) {
+    player1 = prompt("Player 1 name was invalid. (Should not be empty, and should start with a letter or number.) Please enter Player 1's Name: ")
+}
+let player2 = prompt("Enter Player 2 Name: ");
+
+while (!regex.test(player2) || player2==player1) {
+
+    //If the regex check failed, prompt for valid name. Else player2 name was the same as player1, ask for new name.
+
+  player2  = !regex.test(player2) ? prompt(
+    "Player 2 name was invalid. (Should not be empty, and should start with a letter or number.)  Please enter Player 2's Name: ") : prompt("Player 2 cannot have the same name as Player 1. Please enter a new name for Player 2: ")
+}
+
 
 let boardSize = prompt(
-  "Enter board size as an integer greater than or equal to 3."
+  "Enter board size as an integer greater than or equal to 3: "
 );
-
 while (isNaN(boardSize) || boardSize < 3) {
   boardSize = prompt(
     "Invalid board size. Enter board size as an integer greater than or equal to 3."
   );
 }
+
+// Make sure boardSize is an integer
+boardSize = parseInt(boardSize)
 
 
 
@@ -106,40 +117,32 @@ const checkWin = (num) => {
 
   if (col - 2 >= 0) {
     //If the square has at least two spaces to the left
-    if (
-      gameBoard[row][col - 2] === latestSquare &&
-      gameBoard[row][col - 1] === latestSquare
-    ) {
-      return true;
-    }
+    if (gameBoard[row][col - 2] === latestSquare &&gameBoard[row][col - 1] === latestSquare) return true;
+
   }
   if (col + 2 < boardSize) {
     //If the square has at least two spaces to the right
-    if (latestSquare === gameBoard[row][col + 1] && latestSquare === gameBoard[row][col + 2])
-      return true;
+    if (latestSquare === gameBoard[row][col + 1] && latestSquare === gameBoard[row][col + 2]) return true;
   }
   //VERTICAL:
   if (row - 1 >= 0 && row + 1 < boardSize) {
-    if (gameBoard[row - 1][col] === latestSquare && latestSquare === gameBoard[row + 1][col])
-      return true;
+    if (gameBoard[row - 1][col] === latestSquare && latestSquare === gameBoard[row + 1][col]) return true;
   }
+
   if (row - 2 >= 0) {
-    if (gameBoard[row - 2][col] === latestSquare && gameBoard[row - 1][col] === latestSquare)
-      return true;
+    if (gameBoard[row - 2][col] === latestSquare && gameBoard[row - 1][col] === latestSquare) return true;
   }
+
   if (row + 2 < boardSize) {
-    if (latestSquare === gameBoard[row + 1][col] && latestSquare === gameBoard[row + 2][col])
-      return true;
+    if (latestSquare === gameBoard[row + 1][col] && latestSquare === gameBoard[row + 2][col]) return true;
   }
   // DIAGONAL:
   if (row - 2 >= 0 && col + 2 < boardSize) {
     //If there are two squares diagonally upper right
-    if (
-      latestSquare === gameBoard[row - 1][col + 1] && latestSquare ===
-      gameBoard[row - 2][col + 2]
-    )
-      return true;
+    if (latestSquare === gameBoard[row - 1][col + 1] && latestSquare === gameBoard[row - 2][col + 2]) return true;
   }
+
+
   if (row + 2 < boardSize && col - 2 >= 0) {
     // If there are two squares diagonally lower left
     if (
@@ -148,63 +151,53 @@ const checkWin = (num) => {
     )
       return true;
   }
-  if (
-    row + 1 < boardSize &&
-    row - 1 >= 0 &&
-    col + 1 < boardSize &&
-    col - 1 >= 0
-  ) {
+  if (row + 1 < boardSize && row - 1 >= 0 && col + 1 < boardSize && col - 1 >= 0) {
     //If there is one space diagonally lower left and upperright
-    if (
-      gameBoard[row + 1][col - 1] === latestSquare && latestSquare ===
-      gameBoard[row - 1][col + 1]
-    )
-      return true;
+    if (gameBoard[row + 1][col - 1] === latestSquare && latestSquare === gameBoard[row - 1][col + 1]) return true;
   }
+
   if (row - 2 >= 0 && col - 2 >= 0) {
     //If there are two squares diagonally upper left
-    if (
-      gameBoard[row - 2][col - 2] === latestSquare && gameBoard[row - 1][col - 1] ===
-      latestSquare
-    )
+    if (gameBoard[row - 2][col - 2] === latestSquare && gameBoard[row - 1][col - 1] === latestSquare)
       return true;
   }
+
   if (row + 2 < boardSize && col + 2 < boardSize) {
     //If there are two squares diagonally lower right
-    if (
-      latestSquare === gameBoard[row + 1][col + 1] && latestSquare ===
-      gameBoard[row + 2][col + 2]
-    )
+    if (latestSquare === gameBoard[row + 1][col + 1] && latestSquare === gameBoard[row + 2][col + 2]) return true;
+  }
+
+
+  if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < boardSize && col + 1 < boardSize) {
+    if (gameBoard[row - 1][col - 1] === latestSquare && latestSquare === gameBoard[row + 1][col + 1])
       return true;
   }
-  if (
-    row - 1 >= 0 &&
-    col - 1 >= 0 &&
-    row + 1 < boardSize &&
-    col + 1 < boardSize
-  ) {
-    if (
-      gameBoard[row - 1][col - 1] === latestSquare && latestSquare === 
-      gameBoard[row + 1][col + 1]
-    )
-      return true;
-  }
+  //If none of the checks returned true, return false
   return false;
 };
+
 const makeMove = (turnNum) => {
 
     // If turn number is even, it is player 1. else, it's player 2
     const currentPlayer = turnNum%2===0 ? player1 : player2
     const marker = currentPlayer==player1 ? "X" : "O"
     console.log(`It is ${currentPlayer}'s turn!`)
-    let targetSquare = prompt(
-      ` Please enter a number for where you want to make your move.`
-    );
+    console.log(` Please enter a number for where you want to make your move: `);
+    let targetSquare = prompt();
+    while (isNaN(targetSquare) || targetSquare <= 0 || targetSquare > boardSize * boardSize) {
+        if (isNaN(targetSquare)) {
+            targetSquare = prompt(`Sorry, that was not a number. Please enter a number for where you want make your move: `);
+        } else {
+            targetSquare = prompt(`Sorry, there are no squares with that number. Please enter a number for where you want make your move: `)
+        }
+    }
+
+    targetSquare = parseInt(targetSquare)
 
     let madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker)
     while (!madeAValidMove) {
       targetSquare = prompt(
-        "Sorry, that was an invalid move. Please enter a number for a square that has not already been marked."
+        "Sorry, that was an invalid move. Please enter a number for a square that has not already been marked: "
       );
       madeAValidMove = markSquare(targetSquare, boardSize, gameBoard, marker);
     }
