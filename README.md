@@ -1,5 +1,5 @@
-# Text-tictactoe
-Text-based tictactoe for Zendesk. Program can generate boards of any size. Player wins as long as they have 3 consecutive markers in a row (horizontally, diagonally, vertically) regardless of board size. 
+# About
+Text-based tictactoe for Zendesk take-home assignment. Program can generate boards of any size. Player wins as long as they have 3 consecutive markers in a row (horizontally, diagonally, vertically) regardless of board size. 
 
 
 # Requirements
