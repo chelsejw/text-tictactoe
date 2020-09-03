@@ -1,13 +1,13 @@
 const prompt = require('prompt-sync')({sigint: true}) 
 
 const getSquarePosition = (squareNum, boardSize) => {
-  let row = Math.ceil(squareNum / boardSize) - 1;
-  let firstNumOfRow = boardSize * row + 1;
-  let col = squareNum - firstNumOfRow;
-  return {
-    row,
-    col,
-  };
+    let row = Math.ceil(squareNum / boardSize) - 1;
+    let firstNumOfRow = boardSize*row + 1;
+    let col = squareNum - firstNumOfRow;
+    return {
+        row,
+        col,
+    };
 };
 
 const markSquare = (squareNum, boardSize, gameBoard, marker) => {
@@ -99,64 +99,64 @@ let thereIsWinner = false;
 
 // O(1) time complexity, unaffected by board size
 const checkWin = (num) => {
-  const { col, row } = getSquarePosition(num, boardSize);
-  const latestSquare = gameBoard[row][col];
+    const { col, row } = getSquarePosition(num, boardSize);
+    const latestSquare = gameBoard[row][col];
 
-  //Horizontal checks (3 Max)
-  if (col - 1 >= 0 && col + 1 < boardSize) {
-    //If square has at least one space to the left and right
-    if (gameBoard[row][col-1] === latestSquare && latestSquare === gameBoard[row][col+1]) return true;
-  }
-  if (col-2 >= 0) {
-    //If the square has at least two spaces to the left
-    if (gameBoard[row][col-2] === latestSquare &&gameBoard[row][col-1] === latestSquare) return true;
-  }
-  if (col + 2 < boardSize) {
-    //If the square has at least two spaces to the right
-    if (latestSquare === gameBoard[row][col+1] && latestSquare === gameBoard[row][col+2]) return true;
-  }
+    //Horizontal checks (3 Max)
+    if (col - 1 >= 0 && col + 1 < boardSize) {
+        //If square has at least one space to the left and right
+        if (gameBoard[row][col-1] === latestSquare && latestSquare === gameBoard[row][col+1]) return true;
+    }
+    if (col-2 >= 0) {
+        //If the square has at least two spaces to the left
+        if (gameBoard[row][col-2] === latestSquare &&gameBoard[row][col-1] === latestSquare) return true;
+    }
+    if (col + 2 < boardSize) {
+        //If the square has at least two spaces to the right
+        if (latestSquare === gameBoard[row][col+1] && latestSquare === gameBoard[row][col+2]) return true;
+    }
 
-  //Vertical checks (3 Max)
-  if (row-1 >= 0 && row+1 < boardSize) {
-    if (gameBoard[row-1][col] === latestSquare && latestSquare === gameBoard[row+1][col]) return true;
-  }
-  if (row - 2 >= 0) {
-    if (gameBoard[row-2][col] === latestSquare && gameBoard[row-1][col] === latestSquare) return true;
-  }
-  if (row + 2 < boardSize) {
-    if (latestSquare === gameBoard[row+1][col] && latestSquare === gameBoard[row+2][col]) return true;
-  }
+    //Vertical checks (3 Max)
+    if (row-1 >= 0 && row+1 < boardSize) {
+        if (gameBoard[row-1][col] === latestSquare && latestSquare === gameBoard[row+1][col]) return true;
+    }
+    if (row - 2 >= 0) {
+        if (gameBoard[row-2][col] === latestSquare && gameBoard[row-1][col] === latestSquare) return true;
+    }
+    if (row + 2 < boardSize) {
+        if (latestSquare === gameBoard[row+1][col] && latestSquare === gameBoard[row+2][col]) return true;
+    }
 
-  // First diagonal checks (3 max)
-  if (row - 2 >= 0 && col + 2 < boardSize) {
-    //If there are two squares diagonally upper right
-    if (latestSquare === gameBoard[row-1][col+1] && latestSquare === gameBoard[row-2][col+2]) return true;
-  }
-  if (row+2 < boardSize && col-2 >= 0) {
-    // If there are two squares diagonally lower left
-    if (latestSquare === gameBoard[row + 1][col - 1] && latestSquare === gameBoard[row+2][col-2]) return true;
-  }
-  if (row+1 < boardSize && row-1 >= 0 && col+1 < boardSize && col-1 >= 0) {
-    //If there is one space diagonally lower left and upperright
-    if (gameBoard[row+1][col-1] === latestSquare && latestSquare === gameBoard[row-1][col+1]) return true;
-  }
-  
-  // Second diagonal check (3 max)
-  if (row-2 >= 0 && col-2 >= 0) {
-    //If there are two squares diagonally upper left
-    if (gameBoard[row-2][col-2] === latestSquare && gameBoard[row-1][col-1] === latestSquare)
-      return true;
-  }
-  if (row+2 < boardSize && col+2 < boardSize) {
-    //If there are two squares diagonally lower right 
-    if (latestSquare === gameBoard[row+1][col+1] && latestSquare === gameBoard[row+2][col+2]) return true;
-  }
-  if (row-1 >= 0 && col-1 >= 0 && row+1 < boardSize && col+1 < boardSize) {
-    //If there is one square diagonally upper left and lower right
-    if (gameBoard[row-1][col-1] === latestSquare && latestSquare === gameBoard[row+1][col+1]) return true;
-  }
-  //If none of the checks returned true, return false
-  return false;
+    // First diagonal checks (3 max)
+    if (row - 2 >= 0 && col + 2 < boardSize) {
+        //If there are two squares diagonally upper right
+        if (latestSquare === gameBoard[row-1][col+1] && latestSquare === gameBoard[row-2][col+2]) return true;
+    }
+    if (row+2 < boardSize && col-2 >= 0) {
+        // If there are two squares diagonally lower left
+        if (latestSquare === gameBoard[row + 1][col - 1] && latestSquare === gameBoard[row+2][col-2]) return true;
+    }
+    if (row+1 < boardSize && row-1 >= 0 && col+1 < boardSize && col-1 >= 0) {
+        //If there is one space diagonally lower left and upperright
+        if (gameBoard[row+1][col-1] === latestSquare && latestSquare === gameBoard[row-1][col+1]) return true;
+    }
+    
+    // Second diagonal check (3 max)
+    if (row-2 >= 0 && col-2 >= 0) {
+        //If there are two squares diagonally upper left
+        if (gameBoard[row-2][col-2] === latestSquare && gameBoard[row-1][col-1] === latestSquare)
+        return true;
+    }
+    if (row+2 < boardSize && col+2 < boardSize) {
+        //If there are two squares diagonally lower right 
+        if (latestSquare === gameBoard[row+1][col+1] && latestSquare === gameBoard[row+2][col+2]) return true;
+    }
+    if (row-1 >= 0 && col-1 >= 0 && row+1 < boardSize && col+1 < boardSize) {
+        //If there is one square diagonally upper left and lower right
+        if (gameBoard[row-1][col-1] === latestSquare && latestSquare === gameBoard[row+1][col+1]) return true;
+    }
+    //If none of the checks returned true, return false
+    return false;
 };
 
 const makeMove = (turnNum) => {
