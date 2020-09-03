@@ -59,119 +59,101 @@ const initialiseGameBoard = (boardSize) => {
 // GLOBAL VARiABLES: player1, player2, boardSize, gameBoard, turnNum, gameIsDone
 // GETTING PLAYER NAMES
 const regex = /^([^-!@#$%^&*()\s]|\w|\d)/;
+
 console.log("Enter Player 1 Name: ");
 let player1 = prompt();
-
 while (!regex.test(player1)) {
     console.log(
       "Player 1 name was invalid. (Should not be empty, and should start with a letter or number.) Please enter Player 1's Name: "
     );
     player1 = prompt()
 }
+
 console.log("Enter Player 2 Name: ");
 let player2 = prompt();
-
 while (!regex.test(player2) || player2==player1) {
     //If the regex check failed, prompt for valid name. Else player2 name was the same as player1, ask for new name.
     if (!regex.test(player2)) {
         console.log("Player 2 name was invalid. (Should not be empty, and should start with a letter or number.)  Please enter Player 2's Name: ")
     } else {
         console.log("Player 2 cannot have the same name as Player 1. Please enter a new name for Player 2: "); 
-    }
-    
-    player2 = prompt()
+    } 
+    player2 = prompt();
 }
 
-
 console.log("Enter board size as an integer greater than or equal to 3: ");
-
 let boardSize = prompt()
-
 while (isNaN(boardSize) || boardSize < 3) {
     console.log("Invalid board size. Enter board size as an integer greater than or equal to 3.")
     boardSize = prompt();
 }
-
-// Make sure boardSize is an integer
-boardSize = parseInt(boardSize)
+boardSize = parseInt(boardSize); // Make sure boardSize is an integer
 
 
 
-const gameBoard = initialiseGameBoard(boardSize)
+const gameBoard = initialiseGameBoard(boardSize);
 displayBoard(gameBoard, boardSize);
-let turnNum = 0
-let gameIsDone = false
-let thereIsWinner = false
+let turnNum = 0;
+let gameIsDone = false;
+let thereIsWinner = false;
 
 // O(1) time complexity, unaffected by board size
 const checkWin = (num) => {
   const { col, row } = getSquarePosition(num, boardSize);
   const latestSquare = gameBoard[row][col];
-  //Horizontal:
-  // If col-2 >= 0 then need to check for front 2
-  // If col+2 < boardSize then check for back 2.
+
+  //Horizontal checks (3 Max)
   if (col - 1 >= 0 && col + 1 < boardSize) {
     //If square has at least one space to the left and right
-    if (gameBoard[row][col - 1] === latestSquare && latestSquare === gameBoard[row][col + 1])
-      return true;
+    if (gameBoard[row][col-1] === latestSquare && latestSquare === gameBoard[row][col+1]) return true;
   }
-
-  if (col - 2 >= 0) {
+  if (col-2 >= 0) {
     //If the square has at least two spaces to the left
-    if (gameBoard[row][col - 2] === latestSquare &&gameBoard[row][col - 1] === latestSquare) return true;
-
+    if (gameBoard[row][col-2] === latestSquare &&gameBoard[row][col-1] === latestSquare) return true;
   }
   if (col + 2 < boardSize) {
     //If the square has at least two spaces to the right
-    if (latestSquare === gameBoard[row][col + 1] && latestSquare === gameBoard[row][col + 2]) return true;
-  }
-  //VERTICAL:
-  if (row - 1 >= 0 && row + 1 < boardSize) {
-    if (gameBoard[row - 1][col] === latestSquare && latestSquare === gameBoard[row + 1][col]) return true;
+    if (latestSquare === gameBoard[row][col+1] && latestSquare === gameBoard[row][col+2]) return true;
   }
 
+  //Vertical checks (3 Max)
+  if (row-1 >= 0 && row+1 < boardSize) {
+    if (gameBoard[row-1][col] === latestSquare && latestSquare === gameBoard[row+1][col]) return true;
+  }
   if (row - 2 >= 0) {
-    if (gameBoard[row - 2][col] === latestSquare && gameBoard[row - 1][col] === latestSquare) return true;
+    if (gameBoard[row-2][col] === latestSquare && gameBoard[row-1][col] === latestSquare) return true;
+  }
+  if (row + 2 < boardSize) {
+    if (latestSquare === gameBoard[row+1][col] && latestSquare === gameBoard[row+2][col]) return true;
   }
 
-  if (row + 2 < boardSize) {
-    if (latestSquare === gameBoard[row + 1][col] && latestSquare === gameBoard[row + 2][col]) return true;
-  }
-  // DIAGONAL:
+  // First diagonal checks (3 max)
   if (row - 2 >= 0 && col + 2 < boardSize) {
     //If there are two squares diagonally upper right
-    if (latestSquare === gameBoard[row - 1][col + 1] && latestSquare === gameBoard[row - 2][col + 2]) return true;
+    if (latestSquare === gameBoard[row-1][col+1] && latestSquare === gameBoard[row-2][col+2]) return true;
   }
-
-
-  if (row + 2 < boardSize && col - 2 >= 0) {
+  if (row+2 < boardSize && col-2 >= 0) {
     // If there are two squares diagonally lower left
-    if (
-      latestSquare === gameBoard[row + 1][col - 1] && latestSquare ===
-      gameBoard[row + 2][col - 2]
-    )
-      return true;
+    if (latestSquare === gameBoard[row + 1][col - 1] && latestSquare === gameBoard[row+2][col-2]) return true;
   }
-  if (row + 1 < boardSize && row - 1 >= 0 && col + 1 < boardSize && col - 1 >= 0) {
+  if (row+1 < boardSize && row-1 >= 0 && col+1 < boardSize && col-1 >= 0) {
     //If there is one space diagonally lower left and upperright
-    if (gameBoard[row + 1][col - 1] === latestSquare && latestSquare === gameBoard[row - 1][col + 1]) return true;
+    if (gameBoard[row+1][col-1] === latestSquare && latestSquare === gameBoard[row-1][col+1]) return true;
   }
-
-  if (row - 2 >= 0 && col - 2 >= 0) {
+  
+  // Second diagonal check (3 max)
+  if (row-2 >= 0 && col-2 >= 0) {
     //If there are two squares diagonally upper left
-    if (gameBoard[row - 2][col - 2] === latestSquare && gameBoard[row - 1][col - 1] === latestSquare)
+    if (gameBoard[row-2][col-2] === latestSquare && gameBoard[row-1][col-1] === latestSquare)
       return true;
   }
-
-  if (row + 2 < boardSize && col + 2 < boardSize) {
-    //If there are two squares diagonally lower right
-    if (latestSquare === gameBoard[row + 1][col + 1] && latestSquare === gameBoard[row + 2][col + 2]) return true;
+  if (row+2 < boardSize && col+2 < boardSize) {
+    //If there are two squares diagonally lower right 
+    if (latestSquare === gameBoard[row+1][col+1] && latestSquare === gameBoard[row+2][col+2]) return true;
   }
-
-
-  if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < boardSize && col + 1 < boardSize) {
-    if (gameBoard[row - 1][col - 1] === latestSquare && latestSquare === gameBoard[row + 1][col + 1])
-      return true;
+  if (row-1 >= 0 && col-1 >= 0 && row+1 < boardSize && col+1 < boardSize) {
+    //If there is one square diagonally upper left and lower right
+    if (gameBoard[row-1][col-1] === latestSquare && latestSquare === gameBoard[row+1][col+1]) return true;
   }
   //If none of the checks returned true, return false
   return false;
